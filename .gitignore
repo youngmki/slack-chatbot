@@ -204,4 +204,4 @@ cython_debug/
 
 # Configuration
 config.yaml
-
+.idea/
