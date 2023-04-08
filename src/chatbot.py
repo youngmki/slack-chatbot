@@ -2,6 +2,7 @@ import os
 from typing import Optional
 import yaml
 import openai
+from utils.logger import logger
 
 
 class ChatBot:
@@ -29,7 +30,7 @@ class ChatBot:
         system_content: Optional[str] = None,
         assistant_content: Optional[str] = None,
     ) -> str:
-        if self.model == "text-davinchi-003":
+        if self.model == "text-davinci-003":
             completion = openai.Completion.create(
                 model=self.model,
                 prompt=user_content,
@@ -41,14 +42,14 @@ class ChatBot:
             )
             return completion["choices"][0]["text"]
 
-        if self.model == "gpt-3.5-turbo":
+        if self.model in ["gpt-3.5-turbo", "gpt-4"]:
             messages = [{"role": "user", "content": user_content}]
             if system_content is not None:
                 messages.append({"role": "system", "content": system_content})
             if assistant_content is not None:
                 messages.append({"role": "assistant", "content": assistant_content})
 
-            print(messages)
+            logger.info(messages)
             completion = openai.ChatCompletion.create(
                 model=self.model,
                 messages=messages,
@@ -66,11 +67,11 @@ class ChatBot:
     def answer_directly(self) -> None:
         prompt = input("Enter the prompt: ")
         response = self.create(prompt)
-        print(response.strip())
+        logger.info(response.strip())
 
 
 if __name__ == "__main__":
-    config_path = os.path.join("config.yaml")
+    config_path = os.path.join("config/config.yaml")
 
     with open(config_path, encoding="utf-8") as file:
         config = yaml.safe_load(file)

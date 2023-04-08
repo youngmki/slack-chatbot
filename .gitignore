@@ -203,5 +203,6 @@ cython_debug/
 #.idea/
 
 # Configuration
-config.yaml
+config/config.yaml
+logs/
 .idea/

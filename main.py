@@ -1,8 +1,9 @@
 import os
-from pprint import pprint
+from pprint import pformat
 import yaml
 from slack import RTMClient
-from chatbot import ChatBot
+from src.chatbot import ChatBot
+from utils.logger import logger
 
 
 @RTMClient.run_on(event="message")
@@ -14,8 +15,8 @@ def dont_say_any_cfdl_bot(**payload) -> None:
     subtype = data.get("subtype", "")
     tag_code = data.get("text", "").split(" ")[0]
 
-    print("The message received is as follows.")
-    pprint(data)
+    logger.info("The message received is as follows.")
+    logger.info(pformat(data))
 
     if bot_id == "" and subtype == "" and ">" in tag_code:
         channel_id = data["channel"]
@@ -29,7 +30,7 @@ def dont_say_any_cfdl_bot(**payload) -> None:
 
 
 if __name__ == "__main__":
-    config_path = os.path.join("config.yaml")
+    config_path = os.path.join("config/config.yaml")
 
     with open(config_path, encoding="utf-8") as file:
         config = yaml.safe_load(file)
@@ -56,8 +57,8 @@ if __name__ == "__main__":
 
     try:
         rtm_client = RTMClient(token=bot_user_oauth_token)
-        print("Your bot is connected and running!")
+        logger.info("Your bot is connected and running!")
         rtm_client.start()
 
     except Exception as error:
-        print(f"An error occurred and the message was: {error}")
+        logger.error("An error occurred and the message was: %s", error)
